@@ -1,4 +1,8 @@
-# Ejecuta Closers con Steam y el Navegador en una sola instalación
+# Closers Steam Browser
+
+[ClosersSteamBrowser Imagen](https://i.imgur.com/9r8095s.gif)
+
+**Ejecuta Closers con Steam y el Navegador en una sola instalación**
 
 - Si eres de los que tiene instalado Closers Online tanto en el navegador como en Steam, o simplemente quieres usarlo en ambas plataformas sin necesidad de tener dos instalaciones, ¡tenemos la solución para ti!
 
