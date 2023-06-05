@@ -1,6 +1,6 @@
 # Closers Steam Browser
 
-[ClosersSteamBrowser Imagen](https://i.imgur.com/9r8095s.gif)
+![ClosersSteamBrowser Imagen](https://i.imgur.com/9r8095s.gif)
 
 **Ejecuta Closers con Steam y el Navegador en una sola instalación**
 
