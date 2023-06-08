@@ -58,33 +58,40 @@ set "SteamPath=%SteamPath:/=\%"
 :: Comprobando Si la instalacion de Steam esta incompleta y haciendo copia de seguridad
 IF NOT Exist "%SteamPath%\steamapps\common\Closers\Cw.exe" IF NOT Exist "%SteamPath%\steamapps\common\Closers\DAT" (
 MKDIR "%SteamPath%\steamapps\temp\215830"
-Move /Y "%SteamPath%\steamapps\common\Closers\LAUNCHER.exe" "%SteamPath%\steamapps\temp\215830\"
+attrib /s  -r -h -s "%SteamPath%\steamapps\common\Closers\*" 
+attrib /s  -r -h -s "%SteamPath%\steamapps\temp\215830\*"
 Move /Y "%SteamPath%\steamapps\common\Closers\BUGTRAPU-X64.DLL" "%SteamPath%\steamapps\temp\215830\"
+Move /Y "%SteamPath%\steamapps\common\Closers\CLIENT_CLOSERS*.zip" "%SteamPath%\steamapps\temp\215830\"
+Move /Y "%SteamPath%\steamapps\common\Closers\CLOSERS.EXE" "%SteamPath%\steamapps\temp\215830\"
+Move /Y "%SteamPath%\steamapps\common\Closers\LAUNCHER.exe" "%SteamPath%\steamapps\temp\215830\"
+Move /Y "%SteamPath%\steamapps\common\Closers\MSVCR100.DLL" "%SteamPath%\steamapps\temp\215830\"
+Move /Y "%SteamPath%\steamapps\common\Closers\PATCHER_CODE.LUA" "%SteamPath%\steamapps\temp\215830\"
+Move /Y "%SteamPath%\steamapps\common\Closers\steam_appid.txt" "%SteamPath%\steamapps\temp\215830\"
+Move /Y "%SteamPath%\steamapps\common\Closers\VER_CLOSERS.DLL" "%SteamPath%\steamapps\temp\215830\"
 )
 
-::Remover Carpeta de Closers solo si esta vacia.
-set "folder=%SteamPath%\steamapps\common\Closers"
-Call :CarpetaVacia
-set "folder=%myclosers%"
-Call :CarpetaVacia
-Goto SalirVacio
-:CarpetaVacia
-cd /d "%folder%"
-for /f "tokens=1" %%$ in ('dir /b ^| find /v /c ""') do (
-set "valor=%%$"
+:: Comprobando Si la instalacion de Closers Navegador esta incompleta y haciendo copia de seguridad
+IF NOT Exist "%myclosers%\Cw.exe" IF NOT Exist "%myclosers%\DAT" (
+MKDIR "%temp%\215830"
+attrib /s  -r -h -s "%myclosers%\*" 
+attrib /s  -r -h -s "%temp%\215830\*"
+Move /Y "%myclosers%\BUGTRAPU-X64.DLL" "%temp%\215830\"
+Move /Y "%myclosers%\CLIENT_CLOSERS*.zip" "%temp%\215830\"
+Move /Y "%myclosers%\CLOSERS.EXE" "%temp%\215830\"
+Move /Y "%myclosers%\LAUNCHER.exe" "%temp%\215830\"
+Move /Y "%myclosers%\MSVCR100.DLL" "%temp%\215830\"
+Move /Y "%myclosers%\PATCHER_CODE.LUA" "%temp%\215830\"
+Move /Y "%myclosers%\steam_appid.txt" "%temp%\215830\"
+Move /Y "%myclosers%\VER_CLOSERS.DLL" "%temp%\215830\"
 )
-if %valor% equ 0 (
-CLS
-echo La carpeta esta vacia, se borrara, continuando con la instalacion...
-cd ..
-rmdir "%folder%"
-) else (
-CLS
-echo La carpeta no esta vacia, no se borrara, continuando con la instalacion...
-)
-exit /b 0
-GOTO:EOF
-:SalirVacio
+
+:: Borrar Logs de Closers lo cual es innecesario y puede interferir con el proceso
+RD /S /Q "%SteamPath%\steamapps\common\Closers\Log"
+RD /S /Q "%myclosers%\Log"
+
+::Remover Carpeta de Closers solo si esta vacia ya que rmdir no contiene /S /Q.
+rmdir "%SteamPath%\steamapps\common\Closers"
+rmdir "%myclosers%"
 
 :: Comprobar si Closers esta instalado en C:\Closers o en la carpeta de Steam y crear un enlace simbolico si no existe
 if exist "%myclosers%\LAUNCHER.exe" (
@@ -96,16 +103,47 @@ if exist "%myclosers%\LAUNCHER.exe" (
         mklink /d "%myclosers%" "%SteamPath%\steamapps\common\Closers"
     )
 ) else (
-	goto Fin3
+	:: Restaurando Copias de Seguridad por un error encontrado
+	MKDIR "%SteamPath%\steamapps\common\Closers"
+	MKDIR "%myclosers%"
+	Move /Y "%SteamPath%\steamapps\temp\215830\BUGTRAPU-X64.DLL" "%SteamPath%\steamapps\common\Closers\"
+	Move /Y "%SteamPath%\steamapps\temp\215830\CLIENT_CLOSERS*.zip" "%SteamPath%\steamapps\common\Closers\"
+	Move /Y "%SteamPath%\steamapps\temp\215830\CLOSERS.EXE" "%SteamPath%\steamapps\common\Closers\"
+	Move /Y "%SteamPath%\steamapps\temp\215830\LAUNCHER.exe" "%SteamPath%\steamapps\common\Closers\"
+	Move /Y "%SteamPath%\steamapps\temp\215830\MSVCR100.DLL" "%SteamPath%\steamapps\common\Closers\"
+	Move /Y "%SteamPath%\steamapps\temp\215830\PATCHER_CODE.LUA" "%SteamPath%\steamapps\common\Closers\"
+	Move /Y "%SteamPath%\steamapps\temp\215830\steam_appid.txt" "%SteamPath%\steamapps\common\Closers\"
+	Move /Y "%SteamPath%\steamapps\temp\215830\VER_CLOSERS.DLL" "%SteamPath%\steamapps\common\Closers\"
+	Move /Y "%temp%\215830\BUGTRAPU-X64.DLL" "%myclosers%\"
+	Move /Y "%temp%\215830\CLIENT_CLOSERS*.zip" "%myclosers%\"
+	Move /Y "%temp%\215830\CLOSERS.EXE" "%myclosers%\"
+	Move /Y "%temp%\215830\LAUNCHER.exe" "%myclosers%\"
+	Move /Y "%temp%\215830\MSVCR100.DLL" "%myclosers%\"
+	Move /Y "%temp%\215830\PATCHER_CODE.LUA" "%myclosers%\"
+	Move /Y "%temp%\215830\steam_appid.txt" "%myclosers%\"
+	Move /Y "%temp%\215830\VER_CLOSERS.DLL" "%myclosers%\"
+	rmdir "%SteamPath%\steamapps\common\Closers"
+	rmdir "%myclosers%"
+	GOTO Fin3
 )
 
-:: Removiendo Copias de Seguridad Si la carpeta de destino ya contiene Laucher y BUGTRAPU-X64
-IF Exist "%SteamPath%\steamapps\temp\215830\LAUNCHER.exe" IF NOT EXIST "%SteamPath%\steamapps\common\Closers\LAUNCHER.exe"  (
-Move /Y "%SteamPath%\steamapps\temp\215830\LAUNCHER.exe" "%SteamPath%\steamapps\common\Closers\"
-Move /Y "%SteamPath%\steamapps\temp\215830\BUGTRAPU-X64.DLL" "%SteamPath%\steamapps\common\Closers\"
-)
-DEL /S /Q "%SteamPath%\steamapps\temp\215830\LAUNCHER.exe"
+:: Removiendo Copias de Seguridad Si la carpeta de destino contiene los archivos necesarios para funcionar
 DEL /S /Q "%SteamPath%\steamapps\temp\215830\BUGTRAPU-X64.DLL"
+DEL /S /Q "%SteamPath%\steamapps\temp\215830\CLIENT_CLOSERS*.zip"
+DEL /S /Q "%SteamPath%\steamapps\temp\215830\CLOSERS.EXE"
+DEL /S /Q "%SteamPath%\steamapps\temp\215830\LAUNCHER.exe"
+DEL /S /Q "%SteamPath%\steamapps\temp\215830\MSVCR100.DLL"
+DEL /S /Q "%SteamPath%\steamapps\temp\215830\PATCHER_CODE.LUA"
+DEL /S /Q "%SteamPath%\steamapps\temp\215830\steam_appid.txt"
+DEL /S /Q "%SteamPath%\steamapps\temp\215830\VER_CLOSERS.DLL"
+DEL /S /Q "%temp%\215830\BUGTRAPU-X64.DLL"
+DEL /S /Q "%temp%\215830\CLIENT_CLOSERS*.zip"
+DEL /S /Q "%temp%\215830\CLOSERS.EXE"
+DEL /S /Q "%temp%\215830\LAUNCHER.exe"
+DEL /S /Q "%temp%\215830\MSVCR100.DLL"
+DEL /S /Q "%temp%\215830\PATCHER_CODE.LUA"
+DEL /S /Q "%temp%\215830\steam_appid.txt"
+DEL /S /Q "%temp%\215830\VER_CLOSERS.DLL"
 
 :: Comprobando si esta instalado Steam
 if exist "%SteamPath%\steam.exe" goto Instalar1
@@ -187,10 +225,10 @@ if exist /f "%myclosers%\LAUNCHER.exe" /f if exist /f "%SteamPath%\steamapps\com
     CLS
 	SET "var=0"
 	echo Hay dos rutas de instalacion de Closers. Con cual carpeta de instalacion le gustaria trabajar?
-    echo 1) %myclosers%
-    echo 2) %SteamPath%\steamapps\common\Closers
+    echo  [1] %myclosers%
+    echo  [2] %SteamPath%\steamapps\common\Closers
 	echo.
-	SET /P var= ^> Elige una Opcion y presiona ENTER: 
+	SET /P var= ^> Elige una Opcion(1 o 2) y presiona ENTER: 
 	IF /I "%var%"=="1" set "ClosersPath=%myclosers%" & GOTO Fin1
 	IF /I "%var%"=="2" set "ClosersPath=%SteamPath%\steamapps\common\Closers" & GOTO Fin1
 	CLS
